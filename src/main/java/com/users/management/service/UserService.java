@@ -7,19 +7,23 @@ import com.users.management.model.model.DeleteResponseDto;
 import com.users.management.model.model.UserResponseDto;
 import com.users.management.model.model.UserUpdateDto;
 import com.users.management.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bcryptPasswordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bcryptPasswordEncoder) {
         this.userRepository = userRepository;
+        this.bcryptPasswordEncoder = bcryptPasswordEncoder;
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
@@ -27,7 +31,8 @@ public class UserService {
         var userEntity = userRepository.save(Users.builder()
                 .name(createUserRequestDto.getName())
                 .email(createUserRequestDto.getEmail())
-                .password(createUserRequestDto.getPassword())
+                .password(bcryptPasswordEncoder.encode(createUserRequestDto.getPassword()))
+                .role("ROLE_USER")
                 .build());
         return UserResponseDto.builder()
                 .id(userEntity.getId())

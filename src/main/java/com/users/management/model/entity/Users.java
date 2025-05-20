@@ -26,4 +26,5 @@ public class Users {
     private String email;
     private String password;
     private Set<String> languagesKnow = new HashSet<>();
+    private String role;
 }
