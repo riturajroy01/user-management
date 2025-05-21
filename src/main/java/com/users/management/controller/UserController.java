@@ -4,7 +4,6 @@ import com.users.management.model.entity.Users;
 import com.users.management.model.model.*;
 import com.users.management.service.UserService;
 import com.users.management.service.security.UserPrincipal;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -14,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -39,24 +39,28 @@ public class UserController {
         this.context = context;
     }
 
+    @Transactional
     @PostMapping
     public ResponseEntity<UserResponseDto> createUser(@RequestBody @Valid CreateUserRequestDto createUserRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.createUser(createUserRequestDto));
     }
 
+    @Transactional
     @PutMapping("/{userId}")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long userId, @RequestBody UserUpdateDto userUpdateDto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(userService.updateUser(userId, userUpdateDto));
     }
 
+    @Transactional
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(userService.getUserById(userId));
     }
 
+    @Transactional
     @DeleteMapping("/{userId}")
     public ResponseEntity<DeleteResponseDto> deleteUser(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK)

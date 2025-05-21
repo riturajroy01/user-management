@@ -23,7 +23,7 @@ public class UserService {
         this.bcryptPasswordEncoder = bcryptPasswordEncoder;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+    @Transactional(propagation = Propagation.SUPPORTS, isolation = Isolation.REPEATABLE_READ)
     public UserResponseDto createUser(CreateUserRequestDto createUserRequestDto) {
         var userEntity = userRepository.save(Users.builder()
                 .name(createUserRequestDto.getName())
@@ -38,7 +38,7 @@ public class UserService {
                 .build();
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+    @Transactional(propagation = Propagation.SUPPORTS, isolation = Isolation.REPEATABLE_READ)
     public UserResponseDto updateUser(Long userId, UserUpdateDto userUpdateDto) {
         Users existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("UserId# " + userId + " is not a valid input, please enter a valid userId"));
@@ -63,7 +63,7 @@ public class UserService {
                 .languagesKnow(updatedUser.getLanguagesKnow()).build();
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+    @Transactional(propagation = Propagation.SUPPORTS, isolation = Isolation.REPEATABLE_READ)
     public UserResponseDto getUserById(Long userId) {
         Users existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("UserId# " + userId + " is not a valid input, please enter a valid userId"));
@@ -74,10 +74,10 @@ public class UserService {
                 .languagesKnow(existingUser.getLanguagesKnow()).build();
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+    @Transactional(propagation = Propagation.SUPPORTS, isolation = Isolation.REPEATABLE_READ)
     public DeleteResponseDto deleteUser(Long userId) {
         userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("UserId# " + userId + " is not a valid input, please enter a valid userId"));
+                .orElseThrow(() -> new NotFoundException("UserId#" + userId + " is not a valid input, please enter a valid userId"));
 
         userRepository.deleteById(userId);
         return DeleteResponseDto.builder()
