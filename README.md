@@ -3,10 +3,10 @@
 This is a demo project where following use cases are considered
 
 ## User Management Endpoints
-* Create User:    /users/
-* Update User: Information    /users/{userId}
+* Create User:   /users/
+* Update User Information:   /users/{userId}
 * Get User Details:   /users/{userId}
-* Delete User: /users/{userId}
+* Delete User:   /users/{userId}
 *  User Login:   /users/login
 *  User Logout:  /users/logout/{userId}
 
