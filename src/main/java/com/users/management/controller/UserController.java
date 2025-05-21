@@ -6,7 +6,6 @@ import com.users.management.service.UserService;
 import com.users.management.service.security.UserPrincipal;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,19 +23,13 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-
-
     private AuthenticationManager authenticationManager;
-
-    private ApplicationContext context;
-
     Map<Long, Users> loginUsers = new HashMap<>();
 
 
-    public UserController(UserService userService, AuthenticationManager authenticationManager, ApplicationContext context) {
+    public UserController(UserService userService, AuthenticationManager authenticationManager) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
-        this.context = context;
     }
 
     @Transactional
