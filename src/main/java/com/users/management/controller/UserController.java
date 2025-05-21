@@ -3,7 +3,6 @@ package com.users.management.controller;
 import com.users.management.model.entity.Users;
 import com.users.management.model.model.*;
 import com.users.management.service.UserService;
-import com.users.management.service.security.MyUserDetailsService;
 import com.users.management.service.security.UserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -15,8 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -24,7 +21,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
@@ -68,25 +65,26 @@ public class UserController {
 
 
     @GetMapping("/login")
-    public ResponseEntity<String> getLogin(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+    public ResponseEntity<String> getLogin(@RequestBody LoginRequest loginRequest) {
+        userService.getUserByEmailAndPassword(loginRequest);
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Users user = userPrincipal.getUser();
         loginUsers.put(user.getId(), user);
-        return new ResponseEntity<>("User signed-in successfully!.", HttpStatus.OK);
+        return new ResponseEntity<>("User#" + user.getEmail() + " login successful", HttpStatus.OK);
     }
 
     @GetMapping("/logout/{userId}")
     public ResponseEntity<String> getLogOut(@PathVariable Long userId) {
+        UserResponseDto userResponseDto = userService.getUserById(userId);
         log.info("getLogOut userId: {} ", userId);
         if (!loginUsers.isEmpty() && loginUsers.get(userId) != null) {
             loginUsers.remove(userId);
-            return new ResponseEntity<>("User# test@example.com logout successfully", HttpStatus.OK);
+            return new ResponseEntity<>("User# " + userResponseDto.getEmail() + " logout successfully", HttpStatus.OK);
         }
-        return new ResponseEntity<>("User# test@example.com is not logged in. Please login to use this functionality...", HttpStatus.OK);
+        return new ResponseEntity<>("User# " + userResponseDto.getEmail() + " is not logged in. Please login to use this functionality...", HttpStatus.OK);
     }
-
 
 }

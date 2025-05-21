@@ -2,10 +2,7 @@ package com.users.management.service;
 
 import com.users.management.exception.NotFoundException;
 import com.users.management.model.entity.Users;
-import com.users.management.model.model.CreateUserRequestDto;
-import com.users.management.model.model.DeleteResponseDto;
-import com.users.management.model.model.UserResponseDto;
-import com.users.management.model.model.UserUpdateDto;
+import com.users.management.model.model.*;
 import com.users.management.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -56,6 +53,7 @@ public class UserService {
                 .email(existingUser.getEmail())
                 .password(existingUser.getPassword())
                 .languagesKnow(languagesKnown)
+                .role(existingUser.getRole())
                 .build());
 
         return UserResponseDto.builder()
@@ -78,7 +76,7 @@ public class UserService {
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public DeleteResponseDto deleteUser(Long userId) {
-        Users existingUser = userRepository.findById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("UserId# " + userId + " is not a valid input, please enter a valid userId"));
 
         userRepository.deleteById(userId);
@@ -87,8 +85,14 @@ public class UserService {
                 .build();
     }
 
-       /*public List<Users> getAllUsers() {
-        return userRepository.findAll();
-    }*/
+
+    public void getUserByEmailAndPassword(LoginRequest loginRequest) {
+        Users u = userRepository.findByEmail(loginRequest.getEmail());
+        if (u == null || !bcryptPasswordEncoder.matches(loginRequest.getPassword(), bcryptPasswordEncoder.encode(loginRequest.getPassword()))) {
+            throw new NotFoundException("UserId# " + loginRequest.getEmail() + " is not available in the system. Please register..");
+
+        }
+    }
 
 }
+
