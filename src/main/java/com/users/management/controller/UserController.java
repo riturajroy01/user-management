@@ -14,9 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @RestController
@@ -24,7 +23,7 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private AuthenticationManager authenticationManager;
-    Map<Long, Users> loginUsers = new HashMap<>();
+    Map<Long, Users> loginUsers = new ConcurrentHashMap<>();
 
 
     public UserController(UserService userService, AuthenticationManager authenticationManager) {

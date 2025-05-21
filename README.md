@@ -9,6 +9,7 @@ This is a demo project where following use cases are considered
 * Delete User:   /users/{userId}
 *  User Login:   /users/login
 *  User Logout:  /users/logout/{userId}
+* H2 DB console: http://localhost:8080/h2-console/
 
 
 ## Prerequisites
